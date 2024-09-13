@@ -6,8 +6,11 @@ class Category(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
 
-    def _str__(self):
+    def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name_plural = "Categories"
 
 
 class Server(models.Model):
@@ -18,10 +21,10 @@ class Server(models.Model):
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, related_name="server_category"
     )
-    description = models.CharField(max_length=250, null=True)
+    description = models.CharField(max_length=250, blank=True, null=True)
     member = models.ManyToManyField(settings.AUTH_USER_MODEL)
 
-    def _str__(self):
+    def __str__(self):
         return self.name
 
 
@@ -40,5 +43,5 @@ class Channel(models.Model):
         self.name = self.name.lower()
         return super(Channel, self).save()
 
-    def _str__(self):
+    def __str__(self):
         return self.name
