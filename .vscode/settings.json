@@ -1,0 +1,10 @@
+{
+  "black-formatter.importStrategy": "fromEnvironment",
+  "editor.defaultFormatter": null,
+  "flake8.args": ["--max-line-length", "120"],
+  "[python]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "always"
+    }
+  },
+}
