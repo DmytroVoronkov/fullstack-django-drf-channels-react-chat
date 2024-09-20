@@ -363,7 +363,7 @@
         "kind": 6,
         "importPath": "webchat.server.views",
         "description": "webchat.server.views",
-        "peekOfCode": "class ServerListViewSet(viewsets.ViewSet):\n    queryset = Server.objects.all()\n    def list(self, request: Request) -> Response:\n        category = request.query_params.get(\"category\")\n        if category:\n            self.queryset = self.queryset.filter(category__name=category)\n        serializer = ServerSerializer(self.queryset, many=True)\n        return Response(serializer.data)",
+        "peekOfCode": "class ServerListViewSet(viewsets.ViewSet):\n    queryset = Server.objects.all()\n    def list(self, request: Request) -> Response:\n        category = request.query_params.get(\"category\")\n        qty = request.query_params.get(\"qty\")\n        if category:\n            self.queryset = self.queryset.filter(category__name=category)\n        if qty:\n            self.queryset = self.queryset[: int(qty)]\n        serializer = ServerSerializer(self.queryset, many=True)",
         "detail": "webchat.server.views",
         "documentation": {}
     },
