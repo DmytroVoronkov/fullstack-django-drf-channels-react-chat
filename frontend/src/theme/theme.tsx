@@ -19,6 +19,15 @@ export const createMuiTheme = () => {
     primaryAppBar: {
       height: 50,
     },
+
+    components: {
+      MuiAppBar: {
+        defaultProps: {
+          color: "default",
+          elevation: 0,
+        },
+      },
+    },
   });
 
   return theme;
