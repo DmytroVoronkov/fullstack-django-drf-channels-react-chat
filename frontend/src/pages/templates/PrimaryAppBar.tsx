@@ -16,7 +16,7 @@ const PrimaryAppBar = () => {
   const [sideMenu, setSideMenu] = useState<boolean>(false);
   const theme = useTheme();
 
-  const toggleDrawer = (open: boolean) => (e: React.MouseEvent) => {
+  const toggleDrawer = (open: boolean) => () => {
     setSideMenu(open);
   };
 

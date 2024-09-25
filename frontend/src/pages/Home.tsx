@@ -1,5 +1,6 @@
 import { Box, CssBaseline } from "@mui/material";
 import PrimaryAppBar from "./templates/PrimaryAppBar";
+import PrimaryDraw from './templates/PrimaryDraw';
 
 const Home: React.FC = () => {
   return (
@@ -10,6 +11,7 @@ const Home: React.FC = () => {
     >
       <CssBaseline />
       <PrimaryAppBar />
+      <PrimaryDraw></PrimaryDraw>
     </Box>
   );
 };
