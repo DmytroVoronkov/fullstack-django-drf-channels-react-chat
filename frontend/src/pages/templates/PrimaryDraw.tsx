@@ -34,7 +34,7 @@ const PrimaryDraw = () => {
     whiteSpace: "nowrap",
     boxSizing: "border-box",
     ...(open && { ...openedMixin(), "& .MuiDrawer-paper": openedMixin() }),
-    ...(!open && { ...openedMixin(), "& .MuiDrawer-paper": closedMixin() }),
+    ...(!open && { ...closedMixin(), "& .MuiDrawer-paper": closedMixin() }),
   }));
 
   useEffect(() => {
