@@ -56,8 +56,6 @@ class Server(models.Model):
     description = models.CharField(max_length=250, blank=True, null=True)
     member = models.ManyToManyField(settings.AUTH_USER_MODEL)
 
-    banner = models.ImageField()
-
     def __str__(self):
         return f"{self.name} {self.id}"
 
