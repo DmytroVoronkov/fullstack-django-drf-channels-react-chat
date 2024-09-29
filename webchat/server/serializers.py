@@ -21,6 +21,8 @@ class ServerSerializer(serializers.ModelSerializer):
     
     # Nested serializer for related Channel objects (many=True implies multiple related objects)
     channel_server = ChannelSerializer(many=True)
+    
+    category = serializers.StringRelatedField()
 
     class Meta:
         model = Server  # Specifies the model to be serialized

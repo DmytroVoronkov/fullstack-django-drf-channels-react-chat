@@ -25,7 +25,7 @@ const useCrud = <T>(initialData: T[], apiUrl: string): IuseCrud<T> => {
             setError(null);
             setIsLoading(false);
             return data;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             if (error.response && error.response.status == 400) {
                 setError(new Error("400"))
@@ -34,7 +34,7 @@ const useCrud = <T>(initialData: T[], apiUrl: string): IuseCrud<T> => {
             throw error;
         }
 
-        return { fetchData }
+        // return { fetchData }
     }
 
     return { dataCRUD, error, fetchData, isLoading }

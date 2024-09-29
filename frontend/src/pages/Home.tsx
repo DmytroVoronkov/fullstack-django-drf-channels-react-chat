@@ -3,6 +3,7 @@ import PrimaryAppBar from "./templates/PrimaryAppBar";
 import PrimaryDraw from './templates/PrimaryDraw';
 import SecondaryDraw from "./templates/SecondaryDraw";
 import Main from './templates/Main';
+import PopularChannels from '../components/PrimaryDraw/PopularChannels';
 
 const Home: React.FC = () => {
   return (
@@ -13,7 +14,9 @@ const Home: React.FC = () => {
     >
       <CssBaseline />
       <PrimaryAppBar />
-      <PrimaryDraw></PrimaryDraw>
+      <PrimaryDraw>
+        <PopularChannels />
+      </PrimaryDraw>
       <SecondaryDraw></SecondaryDraw>
       <Main></Main>
     </Box>
