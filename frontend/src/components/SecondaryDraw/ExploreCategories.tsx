@@ -23,7 +23,7 @@ interface Category {
 
 const ExploreCategories = () => {
   const theme = useTheme();
-  const { dataCRUD, fetchData, isLoading, error } = useCrud<Category>([], "/server/category");
+  const { dataCRUD, fetchData} = useCrud<Category>([], "/server/category");
 
   useEffect(() => {
     fetchData();
@@ -50,7 +50,7 @@ const ExploreCategories = () => {
           return (
             <ListItem disablePadding key={item.id} sx={{ display: "block" }} dense={true}>
               <Link
-                to={`explore/${item.name}`}
+                to={`/explore/${item.name}`}
                 style={{ textDecoration: "none", color: "inherit" }}
               >
                 <ListItemButton sx={{ minHeigh: 48 }}>
@@ -69,7 +69,12 @@ const ExploreCategories = () => {
                   </ListItemIcon>
                   <ListItemText
                     primary={
-                      <Typography variant="body1" textAlign={"start"} paddingLeft={1}>
+                      <Typography
+                        variant="body1"
+                        textAlign={"start"}
+                        paddingLeft={1}
+                        textTransform={"capitalize"}
+                      >
                         {item.name}
                       </Typography>
                     }

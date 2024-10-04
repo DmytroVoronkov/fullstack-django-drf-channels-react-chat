@@ -26,7 +26,7 @@ type Props = {
 };
 
 const PopularChannels: React.FC<Props> = ({ isOpen }) => {
-  const { dataCRUD, fetchData, isLoading, error } = useCrud<Server>([], "/server/select");
+  const { dataCRUD, fetchData} = useCrud<Server>([], "/server/select");
 
   useEffect(() => {
     fetchData();
@@ -43,7 +43,6 @@ const PopularChannels: React.FC<Props> = ({ isOpen }) => {
           display: "flex",
           alignItems: "center",
           flex: "1 1 100%",
-          bgcolor: "blue",
         }}
       >
         <Typography sx={{ display: isOpen ? "block" : "none" }}>Popular</Typography>
