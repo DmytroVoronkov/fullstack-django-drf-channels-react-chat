@@ -1,8 +1,14 @@
 import { useTheme } from "@mui/material/styles";
 import { Box, Typography } from "@mui/material";
+import React, { ReactNode } from "react";
 
-const SecondaryDraw = () => {
+type SecondaryDrawProps = {
+  children: ReactNode;
+};
+
+const SecondaryDraw: React.FC<SecondaryDrawProps> = ({ children }) => {
   const theme = useTheme();
+
   return (
     <Box
       sx={{
@@ -11,14 +17,10 @@ const SecondaryDraw = () => {
         mt: `${theme.primaryAppBar.height}px`,
         borderRight: `1px solid ${theme.palette.divider}`,
         display: { xs: "none", sm: "block" },
-        overflow: "auto"
+        overflow: "auto",
       }}
     >
-      {[...Array(50)].map((_, index) => (
-        <Typography key={index} component="p">
-          {index + 1}
-        </Typography>
-      ))}
+      {children}
     </Box>
   );
 };

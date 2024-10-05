@@ -11,6 +11,8 @@ import {
 import { useTheme } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useEffect, useState } from "react";
+import ExploreCategories from "../../components/SecondaryDraw/ExploreCategories";
+import AccountButton from "../../components/PrimaryAppBar/AccountButton";
 
 const PrimaryAppBar = () => {
   const [sideMenu, setSideMenu] = useState<boolean>(false);
@@ -21,6 +23,16 @@ const PrimaryAppBar = () => {
   };
 
   const isSmallScreen = useMediaQuery(theme.breakpoints.up("sm"));
+
+  const list = () => (
+    <Box
+      sx={{ pt: `${theme.primaryAppBar.height}px`, minWidth: 200, role: "presentation" }}
+      onClick={toggleDrawer(false)}
+      onKeyDown={toggleDrawer(false)}
+    >
+      <ExploreCategories />
+    </Box>
+  );
 
   useEffect(() => {
     if (isSmallScreen && sideMenu) {
@@ -55,11 +67,7 @@ const PrimaryAppBar = () => {
           </IconButton>
         </Box>
         <Drawer anchor="left" open={sideMenu} onClose={toggleDrawer(false)}>
-          {[...Array(100)].map((_, index) => (
-            <Typography key={index} component="p">
-              {index + 1}
-            </Typography>
-          ))}
+          {list()}
         </Drawer>
         <Link href="/" underline="none" color="inherit">
           <Typography
@@ -76,6 +84,8 @@ const PrimaryAppBar = () => {
             WEBCHAT
           </Typography>
         </Link>
+        <Box sx={{ flexGrow: 1 }}></Box>
+        <AccountButton />
       </Toolbar>
     </AppBar>
   );

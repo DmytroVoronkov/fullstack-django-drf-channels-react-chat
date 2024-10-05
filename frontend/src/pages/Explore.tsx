@@ -7,7 +7,7 @@ import PopularChannels from "../components/PrimaryDraw/PopularChannels";
 import ExploreCategories from "../components/SecondaryDraw/ExploreCategories";
 import ExploreServers from "../components/Main/ExploreServers";
 
-const Home: React.FC = () => {
+const Explore: React.FC = () => {
   return (
     <Box
       sx={{
@@ -29,4 +29,5 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default Explore;
+
