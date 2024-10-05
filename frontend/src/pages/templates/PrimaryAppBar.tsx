@@ -12,6 +12,7 @@ import { useTheme } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useEffect, useState } from "react";
 import ExploreCategories from "../../components/SecondaryDraw/ExploreCategories";
+import AccountButton from "../../components/PrimaryAppBar/AccountButton";
 
 const PrimaryAppBar = () => {
   const [sideMenu, setSideMenu] = useState<boolean>(false);
@@ -29,7 +30,7 @@ const PrimaryAppBar = () => {
       onClick={toggleDrawer(false)}
       onKeyDown={toggleDrawer(false)}
     >
-      <ExploreCategories/>
+      <ExploreCategories />
     </Box>
   );
 
@@ -83,6 +84,8 @@ const PrimaryAppBar = () => {
             WEBCHAT
           </Typography>
         </Link>
+        <Box sx={{ flexGrow: 1 }}></Box>
+        <AccountButton />
       </Toolbar>
     </AppBar>
   );

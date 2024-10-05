@@ -1,29 +1,32 @@
 import Home from "./pages/Home";
+// import Server from "./pages/Server";
+import Explore from "./pages/Explore";
 import {
   createBrowserRouter,
   createRoutesFromElements,
   Route,
   RouterProvider,
 } from "react-router-dom";
-import { ThemeProvider } from "@mui/material";
-import createMuiTheme from './theme/theme';
-import Explore from "./pages/Explore";
+import ToggleColorMode from "./components/ToggleColorMode";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
-      <Route element={<Home />} path={"/"} />
-      <Route element={<Explore />} path={"/explore/:categoryName"} />
+      <Route path="/" element={<Home />} />
+      {/* <Route path="/server" element={<Server />} /> */}
+      <Route path="/explore/:categoryName" element={<Explore />} />
     </Route>
   )
 );
 
 const App = () => {
-  const theme = createMuiTheme();
+  // const theme = createMuiTheme();
   return (
-      <ThemeProvider theme={theme}>
-        <RouterProvider router={router}/>
-      </ThemeProvider>
+    <>
+      <ToggleColorMode>
+        <RouterProvider router={router} />
+      </ToggleColorMode>
+    </>
   );
 };
 

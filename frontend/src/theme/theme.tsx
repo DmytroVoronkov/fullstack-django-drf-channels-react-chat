@@ -13,7 +13,6 @@ declare module "@mui/material/styles" {
       width: number;
     };
   }
-
   interface ThemeOptions {
     primaryAppBar: {
       height: number;
@@ -28,7 +27,7 @@ declare module "@mui/material/styles" {
   }
 }
 
-export const createMuiTheme = () => {
+export const createMuiTheme = (mode: "light" | "dark") => {
   let theme = createTheme({
     typography: {
       fontFamily: ["IBM Plex Sans", "sans-serif"].join(","),
@@ -38,8 +37,8 @@ export const createMuiTheme = () => {
       },
       body2: {
         fontWeight: 500,
+        fontSize: "15px",
         letterSpacing: "-0.5px",
-        fontSize: "15px"
       },
     },
     primaryAppBar: {
@@ -52,6 +51,9 @@ export const createMuiTheme = () => {
     secondaryDraw: {
       width: 240,
     },
+    palette: {
+      mode,
+    },
     components: {
       MuiAppBar: {
         defaultProps: {
@@ -61,9 +63,7 @@ export const createMuiTheme = () => {
       },
     },
   });
-
   theme = responsiveFontSizes(theme);
   return theme;
 };
-
 export default createMuiTheme;

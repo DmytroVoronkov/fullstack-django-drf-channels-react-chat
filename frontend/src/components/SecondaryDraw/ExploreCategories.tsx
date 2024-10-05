@@ -25,6 +25,8 @@ const ExploreCategories = () => {
   const theme = useTheme();
   const { dataCRUD, fetchData} = useCrud<Category>([], "/server/category");
 
+  const isDarkMode = theme.palette.mode === "dark"
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -63,7 +65,7 @@ const ExploreCategories = () => {
                       <img
                         src={`${MEDIA_URL}${item.icon}`}
                         alt={`Server icon ${item.name}`}
-                        style={{ width: "25px", height: "25px", display: "block", margin: "auto" }}
+                        style={{ width: "25px", height: "25px", display: "block", margin: "auto", filter: isDarkMode ? "invert(100%)" : 'none' }}
                       />
                     </ListItemAvatar>
                   </ListItemIcon>
