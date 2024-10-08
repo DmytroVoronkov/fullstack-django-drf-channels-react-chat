@@ -15,7 +15,7 @@ import { useCallback, useEffect } from "react";
 const Server: React.FC = () => {
   const navigate = useNavigate();
   const { serverId, channelId } = useParams();
-  const { dataCRUD, fetchData, error, isLoading } = useCrud<ServerI>(
+  const { dataCRUD, fetchData, error/*, isLoading */ } = useCrud<ServerI>(
     [],
     `/server/select/?by_server_id=${serverId}`
   );

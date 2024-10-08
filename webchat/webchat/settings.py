@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     # Internal
     "account",
     "server",
+    "chat",
     # External
     "channels",
     "corsheaders",
