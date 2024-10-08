@@ -1,8 +1,8 @@
-import React from "react";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 import useWebSocket from "react-use-websocket";
 
-const socketUrl = "ws://127.0.0.1:8000/ws/test";
+// const socketUrl = "ws://127.0.0.1:8000/ws/test";
 
 interface SocketDataI {
   new_message: string;
@@ -12,6 +12,9 @@ interface SocketDataI {
 const MessageInterface = () => {
   const [newMessages, setNewMessages] = useState<string[]>([]);
   const [message, setMessage] = useState("");
+  const { serverId, channelId } = useParams();
+
+  const socketUrl = channelId ? `ws://127.0.0.1:8000/${serverId}/${channelId}` : null;
 
   const { sendJsonMessage } = useWebSocket(socketUrl, {
     onOpen: () => {
@@ -45,7 +48,7 @@ const MessageInterface = () => {
           <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} />
         </label>
       </form>
-      <button onClick={() => sendJsonMessage({type: "message", message})}>Send message</button>
+      <button onClick={() => sendJsonMessage({ type: "message", message })}>Send message</button>
     </div>
   );
 };
