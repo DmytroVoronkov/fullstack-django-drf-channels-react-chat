@@ -1,56 +1,63 @@
-import React from "react";
-import { useState } from "react";
-import useWebSocket from "react-use-websocket";
+import { Box, CssBaseline } from "@mui/material";
+import PrimaryAppBar from "./templates/PrimaryAppBar";
+import PrimaryDraw from "./templates/PrimaryDraw";
+import SecondaryDraw from "./templates/SecondaryDraw";
+import Main from "./templates/Main";
+import MessageInterface from "../components/Main/MessageInterface";
+import ServerChannels from "../components/SecondaryDraw/ServerChannels";
+import UserServers from "../components/PrimaryDraw/UserServers";
+import { useNavigate, useParams } from "react-router-dom";
+import useCrud from "../hooks/useCrud";
 
-const socketUrl = "ws://127.0.0.1:8000/ws/test";
+import { Server as ServerI } from "../@types/server";
+import { useEffect } from "react";
 
-interface SocketDataI {
-  new_message: string;
-  type: string;
-}
+const Server: React.FC = () => {
+  const navigate = useNavigate();
+  const { serverId, channelId } = useParams();
+  const { dataCRUD, fetchData, error, isLoading } = useCrud<ServerI>(
+    [],
+    `/server/select/?by_server_id=${serverId}`
+  );
 
-const Server = () => {
-  const [newMessages, setNewMessages] = useState<string[]>([]);
-  const [message, setMessage] = useState("");
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-  const { sendJsonMessage } = useWebSocket(socketUrl, {
-    onOpen: () => {
-      console.log("Connected!");
-      // sendJsonMessage()
-    },
-    onClose: () => {
-      console.log("Closed!");
-    },
-    onError: (e) => {
-      console.log(e);
-    },
-    onMessage: (msg) => {
-      const data = JSON.parse(msg.data) as SocketDataI;
-      setNewMessages((prev) => [...prev, data.new_message]);
-    },
-  });
+  if (error && error.message === "400") {
+    navigate("/");
+    return null;
+  }
 
-  // const sendHello = React.useCallback(() => {
-  //   const message = { text: inputValue };
-  //   sendJsonMessage(message);
-  // }, [sendJsonMessage, inputValue]);
+
+  // const isChannel = (): Boolean => {
+  //   if (!channelId) {
+  //     return true;
+  //   }
+  //
+  //   return dataCRUD.some((server) =>
+  //     server.channel_server.some((channelId) => channel.id === parseInt(channelId))
+  //   );
+  // };
+
   return (
-    <div>
-      {newMessages.map((message, index) => {
-        return (
-          <div key={index}>
-            <p>{message}</p>
-          </div>
-        );
-      })}
-      <form>
-        <label>
-          Enter message
-          <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} />
-        </label>
-      </form>
-      <button onClick={() => sendJsonMessage({type: "message", message})}>Send message</button>
-    </div>
+    <Box
+      sx={{
+        display: "flex",
+      }}
+    >
+      <CssBaseline />
+      <PrimaryAppBar />
+      <PrimaryDraw>
+        <UserServers isOpen={false} data={dataCRUD}/>
+      </PrimaryDraw>
+      <SecondaryDraw>
+        <ServerChannels data={dataCRUD} />
+      </SecondaryDraw>
+      <Main>
+        <MessageInterface />
+      </Main>
+    </Box>
   );
 };
 
