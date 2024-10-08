@@ -10,7 +10,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import useCrud from "../hooks/useCrud";
 
 import { Server as ServerI } from "../@types/server";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 const Server: React.FC = () => {
   const navigate = useNavigate();
@@ -24,21 +24,28 @@ const Server: React.FC = () => {
     fetchData();
   }, []);
 
+  const isChannel = useCallback( (): boolean => {
+    if (!channelId) {
+      return true;
+    }
+
+    return dataCRUD.some((server) =>
+      server.channel_server.some((channel) => channel.id === parseInt(channelId))
+    );
+  }, [channelId, dataCRUD])
+
+  useEffect(() => {
+    if (!isChannel()) {
+      navigate(`/server/${serverId}`);
+    }
+  }, [isChannel, navigate, serverId]);
+
   if (error && error.message === "400") {
     navigate("/");
     return null;
   }
 
 
-  // const isChannel = (): Boolean => {
-  //   if (!channelId) {
-  //     return true;
-  //   }
-  //
-  //   return dataCRUD.some((server) =>
-  //     server.channel_server.some((channelId) => channel.id === parseInt(channelId))
-  //   );
-  // };
 
   return (
     <Box
@@ -49,7 +56,7 @@ const Server: React.FC = () => {
       <CssBaseline />
       <PrimaryAppBar />
       <PrimaryDraw>
-        <UserServers isOpen={false} data={dataCRUD}/>
+        <UserServers isOpen={false} data={dataCRUD} />
       </PrimaryDraw>
       <SecondaryDraw>
         <ServerChannels data={dataCRUD} />
