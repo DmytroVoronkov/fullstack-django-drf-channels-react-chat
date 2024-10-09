@@ -9,5 +9,13 @@
   },
   "[typescript]": {
     "editor.defaultFormatter": "vscode.typescript-language-features"
-  }
+  },
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "driver": "SQLite",
+      "database": "${workspaceFolder:Django DRF Channels}/webchat/db.sqlite3",
+      "name": "webchat_db"
+    }
+  ]
 }

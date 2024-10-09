@@ -33,7 +33,9 @@ INSTALLED_APPS = [
     # Internal
     "account",
     "server",
+    "chat",
     # External
+    "channels",
     "corsheaders",
     "rest_framework",
     "drf_spectacular",
@@ -69,6 +71,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "webchat.wsgi.application"
+ASGI_APPLICATION = "webchat.asgi.application"
 
 
 # Database
@@ -144,3 +147,11 @@ SPECTACULAR_SETTINGS = {
 # CORS Settings
 
 CORS_ALLOWED_ORIGINS = ["http://localhost:5173"]
+
+# Channels settings
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}

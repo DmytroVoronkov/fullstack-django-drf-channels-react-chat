@@ -80,6 +80,8 @@ class ServerListViewSet(viewsets.ViewSet):
 
         # Filter by server ID
         if by_server_id:
+            # if not request.user.is_authenticated:
+            #     raise AuthenticationFailed("You are not authenticated")
             try:
                 self.queryset = self.queryset.filter(id=by_server_id)
                 if not self.queryset.exists():
