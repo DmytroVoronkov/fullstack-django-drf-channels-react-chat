@@ -62,7 +62,7 @@ const Server: React.FC = () => {
         <ServerChannels data={dataCRUD} />
       </SecondaryDraw>
       <Main>
-        <MessageInterface />
+        <MessageInterface data={dataCRUD} />
       </Main>
     </Box>
   );
