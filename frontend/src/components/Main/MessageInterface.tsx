@@ -71,6 +71,11 @@ const MessageInterface: React.FC<ServerChannelProps> = ({ data }) => {
     }
   };
 
+  const formatTimestamp = (timestamp: string): string => {
+    const date = new Date(Date.parse(timestamp));
+    return `${date.getHours()}:${date.getMinutes()} ${date.toLocaleDateString()} `;
+  };
+
   const { sendJsonMessage } = useWebSocket(socketUrl, {
     onOpen: async () => {
       try {
@@ -94,6 +99,7 @@ const MessageInterface: React.FC<ServerChannelProps> = ({ data }) => {
       setMessage("");
     },
   });
+
   return (
     <>
       <MessageChannels data={data} />
@@ -131,17 +137,24 @@ const MessageInterface: React.FC<ServerChannelProps> = ({ data }) => {
                       </ListItemAvatar>
                       <ListItemText
                         primary={
-                          <Typography
-                            component="span"
-                            variant="body1"
-                            color="text.primary"
-                            sx={{
-                              display: "inline",
-                              fontWeight: 600,
-                            }}
-                          >
-                            {message.sender}
-                          </Typography>
+                          <>
+                            <Typography
+                              component="span"
+                              variant="body1"
+                              color="text.primary"
+                              sx={{
+                                display: "inline",
+                                fontWeight: 600,
+                              }}
+                            >
+                              {message.sender}
+                            </Typography>
+                            <Typography
+                              component="span"
+                              variant="caption"
+                              color="textSecondary"
+                            >{` at ${formatTimestamp(message.timestamp)}`}</Typography>
+                          </>
                         }
                         secondary={
                           <>
