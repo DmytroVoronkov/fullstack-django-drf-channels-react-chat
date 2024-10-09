@@ -9,13 +9,13 @@ import UserServers from "../components/PrimaryDraw/UserServers";
 import { useNavigate, useParams } from "react-router-dom";
 import useCrud from "../hooks/useCrud";
 
-import { Server as ServerI } from "../@types/server";
+import { Server as IServer } from "../@types/server";
 import { useCallback, useEffect } from "react";
 
 const Server: React.FC = () => {
   const navigate = useNavigate();
   const { serverId, channelId } = useParams();
-  const { dataCRUD, fetchData, error/*, isLoading */ } = useCrud<ServerI>(
+  const { dataCRUD, fetchData, error /*, isLoading */ } = useCrud<IServer>(
     [],
     `/server/select/?by_server_id=${serverId}`
   );
@@ -24,7 +24,7 @@ const Server: React.FC = () => {
     fetchData();
   }, []);
 
-  const isChannel = useCallback( (): boolean => {
+  const isChannel = useCallback((): boolean => {
     if (!channelId) {
       return true;
     }
@@ -32,7 +32,7 @@ const Server: React.FC = () => {
     return dataCRUD.some((server) =>
       server.channel_server.some((channel) => channel.id === parseInt(channelId))
     );
-  }, [channelId, dataCRUD])
+  }, [channelId, dataCRUD]);
 
   useEffect(() => {
     if (!isChannel()) {
@@ -44,8 +44,6 @@ const Server: React.FC = () => {
     navigate("/");
     return null;
   }
-
-
 
   return (
     <Box

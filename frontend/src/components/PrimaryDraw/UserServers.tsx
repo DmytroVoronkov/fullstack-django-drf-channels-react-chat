@@ -11,18 +11,17 @@ import {
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import { MEDIA_URL } from "../../config";
 import { Link } from "react-router-dom";
-import { Server as ServerI } from "../../@types/server";
+import { Server as IServer } from "../../@types/server";
 
 type ServerChannelProps = {
-  data: ServerI[]
-}
+  data: IServer[];
+};
 
 type Props = {
   isOpen: boolean;
 };
 
 const UserServers: React.FC<Props & ServerChannelProps> = ({ isOpen, data }) => {
-
   return (
     <>
       <Box

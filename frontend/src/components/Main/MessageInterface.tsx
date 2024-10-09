@@ -3,8 +3,9 @@ import { useParams } from "react-router-dom";
 import useWebSocket from "react-use-websocket";
 import { Message as MessageI } from "../../@types/message";
 import useCrud from "../../hooks/useCrud";
-import { Server as ServerI } from "../../@types/server";
+import { Server as IServer } from "../../@types/server";
 import { Box, Typography } from "@mui/material";
+import MessageChannels from "./MessageChannels";
 
 // const socketUrl = "ws://127.0.0.1:8000/ws/test";
 
@@ -14,17 +15,17 @@ interface SocketDataI {
 }
 
 interface ServerChannelProps {
-  data: ServerI[]
+  data: IServer[];
 }
 
-const MessageInterface: React.FC<ServerChannelProps> = ({data}) => {
+const MessageInterface: React.FC<ServerChannelProps> = ({ data }) => {
   const [newMessages, setNewMessages] = useState<MessageI[]>([]);
   const [message, setMessage] = useState("");
   const { serverId, channelId } = useParams();
-  const { dataCRUD, fetchData } = useCrud<MessageI>([], `/messages/?channel_id=${channelId}`);
+  const { fetchData } = useCrud<MessageI>([], `/messages/?channel_id=${channelId}`);
 
-  const server_name = data?.[0].name ?? "Server"
-  const server_description = data?.[0].description ?? "This is out Home"
+  const server_name = data?.[0]?.name ?? "Server";
+  const server_description = data?.[0]?.description ?? "This is out Home";
 
   const socketUrl = channelId ? `ws://127.0.0.1:8000/${serverId}/${channelId}` : null;
 
@@ -36,7 +37,7 @@ const MessageInterface: React.FC<ServerChannelProps> = ({data}) => {
         setNewMessages(Array.isArray(data) ? data : []);
         console.log("Connected");
       } catch (e) {
-        console.log(e.message);
+        console.log(e);
       }
     },
     onClose: () => {
@@ -52,6 +53,7 @@ const MessageInterface: React.FC<ServerChannelProps> = ({data}) => {
   });
   return (
     <>
+      <MessageChannels data={data} />
       {channelId === undefined ? (
         <Box
           sx={{

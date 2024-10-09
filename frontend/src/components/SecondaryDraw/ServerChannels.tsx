@@ -9,10 +9,10 @@ import {
 } from "@mui/material";
 import React from "react";
 import { Link, useParams } from "react-router-dom";
-import { Server as ServerI } from "../../@types/server";
+import { Server as IServer } from "../../@types/server";
 
 type ServerCategoryProps = {
-  data: ServerI[];
+  data: IServer[];
 };
 
 const ServerChannels: React.FC<ServerCategoryProps> = ({ data }) => {

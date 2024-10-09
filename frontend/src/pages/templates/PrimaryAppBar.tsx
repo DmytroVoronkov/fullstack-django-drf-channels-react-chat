@@ -18,7 +18,14 @@ const PrimaryAppBar = () => {
   const [sideMenu, setSideMenu] = useState<boolean>(false);
   const theme = useTheme();
 
-  const toggleDrawer = (open: boolean) => () => {
+  const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+    if (
+      event.type === "keydown" &&
+      (event as React.KeyboardEvent).key === "Tab" &&
+      (event as React.KeyboardEvent).key === "Shift"
+    ) {
+      return;
+    }
     setSideMenu(open);
   };
 
