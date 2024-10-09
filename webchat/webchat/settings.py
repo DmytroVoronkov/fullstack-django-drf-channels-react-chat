@@ -30,11 +30,21 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # Internal
+    "account",
+    "server",
+    "chat",
+    # External
+    "channels",
+    "corsheaders",
+    "rest_framework",
+    "drf_spectacular",
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -61,6 +71,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "webchat.wsgi.application"
+ASGI_APPLICATION = "webchat.asgi.application"
 
 
 # Database
@@ -109,8 +120,38 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = "static/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = "media/"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+AUTH_USER_MODEL = "account.Account"
+
+REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.SessionAuthentication",
+    ],
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Webchat API",
+    "DESCRIPTION": "",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": True,
+}
+
+# CORS Settings
+
+CORS_ALLOWED_ORIGINS = ["http://localhost:5173"]
+
+# Channels settings
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
