@@ -11,7 +11,9 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
+  TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import MessageChannels from "./MessageChannels";
 
@@ -20,6 +22,12 @@ import MessageChannels from "./MessageChannels";
 interface SocketDataI {
   new_message: MessageI;
   type: string;
+}
+
+interface SendMessageData {
+  message: string;
+  type: string;
+  [key: string]: string;
 }
 
 interface ServerChannelProps {
@@ -31,11 +39,36 @@ const MessageInterface: React.FC<ServerChannelProps> = ({ data }) => {
   const [message, setMessage] = useState("");
   const { serverId, channelId } = useParams();
   const { fetchData } = useCrud<MessageI>([], `/messages/?channel_id=${channelId}`);
+  const theme = useTheme();
 
   const server_name = data?.[0]?.name ?? "Server";
   const server_description = data?.[0]?.description ?? "This is out Home";
 
   const socketUrl = channelId ? `ws://127.0.0.1:8000/${serverId}/${channelId}` : null;
+
+  const handleChange: React.ChangeEventHandler<HTMLTextAreaElement> = (
+    e: React.ChangeEvent<HTMLTextAreaElement>
+  ) => {
+    setMessage(e.target.value);
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    sendJsonMessage({
+      type: "message",
+      message,
+    } as SendMessageData);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      sendJsonMessage({
+        type: "message",
+        message,
+      } as SendMessageData);
+    }
+  };
 
   const { sendJsonMessage } = useWebSocket(socketUrl, {
     onOpen: async () => {
@@ -57,6 +90,7 @@ const MessageInterface: React.FC<ServerChannelProps> = ({ data }) => {
     onMessage: (msg) => {
       const data = JSON.parse(msg.data) as SocketDataI;
       setNewMessages((prev) => [...prev, data.new_message]);
+      setMessage("");
     },
   });
   return (
@@ -84,74 +118,81 @@ const MessageInterface: React.FC<ServerChannelProps> = ({ data }) => {
           </Box>
         </Box>
       ) : (
-        <Box sx={{ overflow: "hidden", p: 0, height: `calc(100vh - 100px)` }}>
-          <List sx={{ width: "100%", bgcolor: "background.paper" }}>
-            {newMessages.map((message, index) => {
-              return (
-                <ListItem key={index} alignItems="flex-start">
-                  <ListItemAvatar>
-                    <Avatar alt={`${message.sender} avatar`} />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={
-                      <Typography
-                        component="span"
-                        variant="body1"
-                        color="text.primary"
-                        sx={{
-                          display: "inline",
-                          fontWeight: 600,
-                        }}
-                      >
-                        {message.sender}
-                      </Typography>
-                    }
-                    secondary={
-                      <Box>
+        <>
+          <Box sx={{ overflow: "hidden", p: 0, height: `calc(100vh - 100px)` }}>
+            <List sx={{ width: "100%", bgcolor: "background.paper" }}>
+              {newMessages.map((message, index) => {
+                return (
+                  <ListItem key={index} alignItems="flex-start">
+                    <ListItemAvatar>
+                      <Avatar alt={`${message.sender} avatar`} />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={
                         <Typography
-                          variant="body1"
-                          sx={{
-                            overflow: "visible",
-                            whitespace: "normal",
-                            textOverflow: "clip",
-                            display: "inline",
-                            fontWeight: 400,
-                            letterSpacing: "-0.2px",
-                          }}
                           component="span"
+                          variant="body1"
                           color="text.primary"
+                          sx={{
+                            display: "inline",
+                            fontWeight: 600,
+                          }}
                         >
-                          {message.content}
+                          {message.sender}
                         </Typography>
-                      </Box>
-                    }
-                    primaryTypographyProps={{ fontSize: "12px", variant: "body2" }}
-                  ></ListItemText>
-                </ListItem>
-              );
-            })}
-          </List>
-        </Box>
-
-        // <div>
-        //   {newMessages.map((message, index) => {
-        //     return (
-        //       <div key={index}>
-        //         <p>{message.sender}</p>
-        //         <p>{message.content}</p>
-        //       </div>
-        //     );
-        //   })}
-        //   <form>
-        //     <label>
-        //       Enter message
-        //       <input type="text" value={message} onChange={(e) => setMessage(e.target.value)} />
-        //     </label>
-        //   </form>
-        //   <button onClick={() => sendJsonMessage({ type: "message", message })}>
-        //     Send message
-        //   </button>
-        // </div>
+                      }
+                      secondary={
+                        <Box>
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              overflow: "visible",
+                              whitespace: "normal",
+                              textOverflow: "clip",
+                              display: "inline",
+                              fontWeight: 400,
+                              letterSpacing: "-0.2px",
+                            }}
+                            component="span"
+                            color="text.primary"
+                          >
+                            {message.content}
+                          </Typography>
+                        </Box>
+                      }
+                      primaryTypographyProps={{ fontSize: "12px", variant: "body2" }}
+                    ></ListItemText>
+                  </ListItem>
+                );
+              })}
+            </List>
+          </Box>
+          <Box sx={{ position: "sticky", bottom: 0, width: "100%" }}>
+            <form
+              onSubmit={handleSubmit}
+              style={{
+                bottom: 0,
+                right: 0,
+                padding: "1rem",
+                backgroundColor: theme.palette.background.default,
+                zIndex: 1,
+              }}
+            >
+              <Box sx={{ display: "flex" }}>
+                <TextField
+                  fullWidth
+                  multiline
+                  minRows={1}
+                  maxRows={4}
+                  sx={{ flexGrow: 1 }}
+                  value={message}
+                  onChange={handleChange}
+                  onKeyDown={handleKeyDown}
+                />
+              </Box>
+            </form>
+          </Box>
+        </>
       )}
     </>
   );
