@@ -16,6 +16,7 @@ import {
   useTheme,
 } from "@mui/material";
 import MessageChannels from "./MessageChannels";
+import Scroll from "./Scroll";
 
 // const socketUrl = "ws://127.0.0.1:8000/ws/test";
 
@@ -120,52 +121,54 @@ const MessageInterface: React.FC<ServerChannelProps> = ({ data }) => {
       ) : (
         <>
           <Box sx={{ overflow: "hidden", p: 0, height: `calc(100vh - 100px)` }}>
-            <List sx={{ width: "100%", bgcolor: "background.paper" }}>
-              {newMessages.map((message, index) => {
-                return (
-                  <ListItem key={index} alignItems="flex-start">
-                    <ListItemAvatar>
-                      <Avatar alt={`${message.sender} avatar`} />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={
-                        <Typography
-                          component="span"
-                          variant="body1"
-                          color="text.primary"
-                          sx={{
-                            display: "inline",
-                            fontWeight: 600,
-                          }}
-                        >
-                          {message.sender}
-                        </Typography>
-                      }
-                      secondary={
-                        <Box>
+            <Scroll>
+              <List sx={{ width: "100%", bgcolor: "background.paper" }}>
+                {newMessages.map((message, index) => {
+                  return (
+                    <ListItem key={index} alignItems="flex-start">
+                      <ListItemAvatar>
+                        <Avatar alt={`${message.sender} avatar`} />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={
                           <Typography
-                            variant="body1"
-                            sx={{
-                              overflow: "visible",
-                              whitespace: "normal",
-                              textOverflow: "clip",
-                              display: "inline",
-                              fontWeight: 400,
-                              letterSpacing: "-0.2px",
-                            }}
                             component="span"
+                            variant="body1"
                             color="text.primary"
+                            sx={{
+                              display: "inline",
+                              fontWeight: 600,
+                            }}
                           >
-                            {message.content}
+                            {message.sender}
                           </Typography>
-                        </Box>
-                      }
-                      primaryTypographyProps={{ fontSize: "12px", variant: "body2" }}
-                    ></ListItemText>
-                  </ListItem>
-                );
-              })}
-            </List>
+                        }
+                        secondary={
+                          <>
+                            <Typography
+                              variant="body1"
+                              sx={{
+                                overflow: "visible",
+                                whitespace: "normal",
+                                textOverflow: "clip",
+                                display: "inline",
+                                fontWeight: 400,
+                                letterSpacing: "-0.2px",
+                              }}
+                              component="span"
+                              color="text.primary"
+                            >
+                              {message.content}
+                            </Typography>
+                          </>
+                        }
+                        primaryTypographyProps={{ fontSize: "12px", variant: "body2" }}
+                      ></ListItemText>
+                    </ListItem>
+                  );
+                })}
+              </List>
+            </Scroll>
           </Box>
           <Box sx={{ position: "sticky", bottom: 0, width: "100%" }}>
             <form
