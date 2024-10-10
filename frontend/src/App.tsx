@@ -8,11 +8,13 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import ToggleColorMode from "./components/ToggleColorMode";
+import Login from "./pages/Login";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
       <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
       <Route path="/server/:serverId/:channelId?" element={<Server />} />
       <Route path="/explore/:categoryName" element={<Explore />} />
     </Route>
