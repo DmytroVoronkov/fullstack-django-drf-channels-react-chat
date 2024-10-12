@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import ToggleColorMode from "./components/ToggleColorMode";
 import Login from "./pages/Login";
+import { AuthServiceProvider } from "./context/AuthContext";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -25,9 +26,11 @@ const App = () => {
   // const theme = createMuiTheme();
   return (
     <>
-      <ToggleColorMode>
-        <RouterProvider router={router} />
-      </ToggleColorMode>
+      <AuthServiceProvider>
+        <ToggleColorMode>
+          <RouterProvider router={router} />
+        </ToggleColorMode>
+      </AuthServiceProvider>
     </>
   );
 };

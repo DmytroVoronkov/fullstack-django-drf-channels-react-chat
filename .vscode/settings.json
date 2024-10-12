@@ -17,5 +17,6 @@
       "database": "${workspaceFolder:Django DRF Channels}/webchat/db.sqlite3",
       "name": "webchat_db"
     }
-  ]
+  ],
+  "cSpell.words": ["Formik"]
 }
