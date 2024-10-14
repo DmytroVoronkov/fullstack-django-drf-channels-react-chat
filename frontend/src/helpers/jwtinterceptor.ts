@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from "axios";
+import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../config";
 
@@ -13,10 +13,33 @@ const useAxiosWithInterceptor = (): AxiosInstance => {
 			return response;
 		},
 		async (error) => {
-			// const originalRequest = error.config;
-			if (error.response?.status === 401) {
-				const goRoot = () => navigate("/")
-				goRoot();
+			const originalRequest = error.config as AxiosRequestConfig;
+
+			if (error.response?.status === 401 || error.response?.status === 403) {
+				const refreshToken = localStorage.getItem("refresh_token")
+
+				if (refreshToken) {
+					console.log("token is expired, trying refresh")
+					try {
+						const refreshResponse = await axios.post<{ access: string }>(`${BASE_URL}/token/refresh/`, { refresh: refreshToken })
+						const accessToken = refreshResponse.data.access
+
+						localStorage.setItem("access_token", accessToken)
+
+						if (originalRequest.headers) {
+							originalRequest.headers["Authorization"] = `Bearer ${accessToken}`
+						}
+
+						return jwtAxios(originalRequest)
+
+					} catch (e) {
+						console.log(e)
+						navigate("/login")
+						throw e;
+					}
+				} else {
+					navigate("/login")
+				}
 			}
 			throw error;
 		}
