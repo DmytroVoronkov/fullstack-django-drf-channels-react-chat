@@ -1,10 +1,21 @@
+import { useNavigate } from "react-router-dom";
 import { useAuthServiceContext } from "../context/useAuthServiceContext";
 
 const TestLogin = () => {
-  const { isLoggedIn } = useAuthServiceContext();
-  console.log("in test login", isLoggedIn)
+  const { isLoggedIn, logout } = useAuthServiceContext();
+  const navigate = useNavigate()
 
-  return <div>{isLoggedIn.toString()}</div>;
+  return (
+    <div>
+      {isLoggedIn.toString()}
+      <button
+        onClick={() => {
+          logout();
+          navigate("/login")
+        }}
+      >Logout</button>
+    </div>
+  );
 };
 
 export default TestLogin;

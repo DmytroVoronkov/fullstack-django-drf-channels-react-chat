@@ -2,6 +2,7 @@ import axios from "axios";
 import { AuthServiceProps } from "../@types/auth-service";
 import { BASE_URL } from "../config";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // FIXME: Move to separate file
 interface LoginResponse { access: string, refresh: string }
@@ -11,7 +12,7 @@ export default function useAuthService(): AuthServiceProps {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
         const isLogged = localStorage.getItem("isLoggedIn")
 
-        return isLogged !== null ? Boolean(isLogged) : false
+        return isLogged === "true"
     }
     )
 
@@ -74,5 +75,13 @@ export default function useAuthService(): AuthServiceProps {
         }
     }
 
-    return { login, isLoggedIn }
+    const logout = () => {
+        localStorage.removeItem("access_token")
+        localStorage.removeItem("refresh_token")
+        localStorage.removeItem("user_id")
+        localStorage.setItem("isLoggedIn", "false")
+
+    }
+
+    return { login, logout, isLoggedIn }
 }
