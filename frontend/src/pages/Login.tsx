@@ -17,7 +17,7 @@ const Login = () => {
       const res = await login(username, password);
       if (res) {
         console.log(res);
-        navigate('/')
+        navigate('/testLogin')
       }
     },
   });
