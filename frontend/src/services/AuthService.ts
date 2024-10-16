@@ -10,7 +10,6 @@ interface LoginResponse { access: string, refresh: string }
 export default function useAuthService(): AuthServiceProps {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
         const isLogged = localStorage.getItem("isLoggedIn")
-
         return isLogged === "true"
     })
 
@@ -18,11 +17,8 @@ export default function useAuthService(): AuthServiceProps {
     // FIXME: Move to context maybe????
     // const getUserDetails = async () => {
     //     try {
-    //         // FIXME: Create local storage service
-    //         const user_id = localStorage.getItem("user_id")
-    //         const access = localStorage.getItem("access_token")
     //         // FIXME: Fix typing && Refactor urls
-    //         const response = await axios.get<UserDetailsResponse>(`${BASE_URL}/account/?user_id=${user_id}`, { headers: { Authorization: `Bearer ${access}` } })
+    //         const response = await axios.get<UserDetailsResponse>(`${BASE_URL}/account/?user_id=1`, { withCredentials: true })
 
     //         const { username } = response.data
 
@@ -70,6 +66,7 @@ export default function useAuthService(): AuthServiceProps {
 
     const logout = () => {
         localStorage.setItem("isLoggedIn", "false")
+        setIsLoggedIn(false)
     }
 
     return { login, logout, isLoggedIn }

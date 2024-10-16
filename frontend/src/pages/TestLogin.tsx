@@ -14,20 +14,17 @@ const TestLogin = () => {
   const [username, setUsername] = useState("");
   const navigate = useNavigate();
 
-  const jwtaxios = useAxiosWithInterceptor()
+  const jwtaxios = useAxiosWithInterceptor();
 
   const getUserDetails = async () => {
     try {
-      // FIXME: Create local storage service
-      const user_id = localStorage.getItem("user_id");
-      const access = localStorage.getItem("access_token");
       // FIXME: Fix typing && Refactor urls
-      const response = await jwtaxios.get<UserDetailsResponse>(
-        `${BASE_URL}/account/?user_id=${user_id}`,
-        { headers: { Authorization: `Bearer ${access}` } }
-      );
+      const response = await jwtaxios
+        .get<UserDetailsResponse>(`${BASE_URL}/account/?user_id=1`, {
+          withCredentials: true,
+        })
 
-      setUsername(response.data.username)
+      setUsername(response.data.username);
       // FIXME: Type error
     } catch (e) {
       return e;
@@ -45,7 +42,7 @@ const TestLogin = () => {
       >
         Logout
       </button>
-      <button onClick={() => {getUserDetails()}}>Get User Details</button>
+      <button onClick={getUserDetails}>Get User Details</button>
       {username}
     </div>
   );
