@@ -1,13 +1,13 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../config";
-
+import useAuthService from "../services/AuthService";
 const API_BASE_URL = BASE_URL;
 
 const useAxiosWithInterceptor = (): AxiosInstance => {
 	const jwtAxios = axios.create({ baseURL: API_BASE_URL, withCredentials: true });
 	const navigate = useNavigate();
-
+	const { logout } = useAuthService()
 	jwtAxios.interceptors.response.use(
 		(response) => {
 			return response;
@@ -16,29 +16,17 @@ const useAxiosWithInterceptor = (): AxiosInstance => {
 			const originalRequest = error.config as AxiosRequestConfig;
 
 			if (error.response?.status === 401 || error.response?.status === 403) {
-				const refreshToken = localStorage.getItem("refresh_token")
+				try {
+					const response = await axios.post<{ access: string }>(`${BASE_URL}/token/refresh/`, {}, {withCredentials: true})
 
-				if (refreshToken) {
-					console.log("token is expired, trying refresh")
-					try {
-						const refreshResponse = await axios.post<{ access: string }>(`${BASE_URL}/token/refresh/`, { refresh: refreshToken })
-						const accessToken = refreshResponse.data.access
-
-						localStorage.setItem("access_token", accessToken)
-
-						if (originalRequest.headers) {
-							originalRequest.headers["Authorization"] = `Bearer ${accessToken}`
-						}
-
+					if (response.status === 200) {
 						return jwtAxios(originalRequest)
-
-					} catch (e) {
-						console.log(e)
-						navigate("/login")
-						throw e;
 					}
-				} else {
+				} catch (e) {
+					console.log(e)
+					logout()
 					navigate("/login")
+					return Promise.reject(e)
 				}
 			}
 			throw error;

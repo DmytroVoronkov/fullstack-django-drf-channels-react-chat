@@ -7,7 +7,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from .models import Account
 from .schemas import list_accounts_docs
-from .serializers import AccountSerializer, CustomTokenObtainPairSerializer
+from .serializers import AccountSerializer, CustomTokenObtainPairSerializer, CustomTokenRefreshSerializer
 
 
 # Create your views here.
@@ -25,7 +25,8 @@ class AccountViewSet(viewsets.ViewSet):
 
 class JWTSetCookieMixin:
     def finalize_response(self, request: Request, response: Response, *args, **kwargs):
-        if response.data["refresh"]:
+        print("RESPONSE", response.data)
+        if response.data.get("refresh"):
             response.set_cookie(
                 settings.SIMPLE_JWT["REFRESH_TOKEN_NAME"],
                 response.data["refresh"],
@@ -33,7 +34,7 @@ class JWTSetCookieMixin:
                 httponly=True,
                 samesite=settings.SIMPLE_JWT["JWT_COOKIE_SAMESITE"],
             )
-        if response.data["access"]:
+        if response.data.get("access"):
             response.set_cookie(
                 settings.SIMPLE_JWT["ACCESS_TOKEN_NAME"],
                 response.data["access"],
@@ -42,10 +43,13 @@ class JWTSetCookieMixin:
                 samesite=settings.SIMPLE_JWT["JWT_COOKIE_SAMESITE"],
             )
 
-        del response.data["access"]
+            del response.data["access"]
 
         return super().finalize_response(request, response, *args, *kwargs)
 
 
 class JWTCookieTokenObtainPairView(JWTSetCookieMixin, TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
+class JWTCookieTokenRefreshView(JWTSetCookieMixin, TokenRefreshView):
+    serializer_class = CustomTokenRefreshSerializer

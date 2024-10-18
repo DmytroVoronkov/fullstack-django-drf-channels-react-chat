@@ -3,6 +3,7 @@ import { useAuthServiceContext } from "../context/useAuthServiceContext";
 import { BASE_URL } from "../config";
 import { useState } from "react";
 import useAxiosWithInterceptor from "../helpers/jwtinterceptor";
+import axios from "axios";
 
 // FIXME: Move to separate file
 interface UserDetailsResponse {

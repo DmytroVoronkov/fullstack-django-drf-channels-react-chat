@@ -17,7 +17,7 @@ export default function useAuthService(): AuthServiceProps {
     // FIXME: Move to context maybe????
     const getUserDetails = async () => {
         try {
-            const userId = Number(localStorage.getItem("user_id"))
+            const userId = localStorage.getItem("user_id")
             // FIXME: Fix typing && Refactor urls
             const response = await axios.get<UserDetailsResponse>(`${BASE_URL}/account/?user_id=${userId}`, { withCredentials: true })
 
@@ -30,6 +30,7 @@ export default function useAuthService(): AuthServiceProps {
             // FIXME: Type error
         } catch (e) {
             console.log(e)
+            setIsLoggedIn(false)
             localStorage.setItem("isLoggedIn", "false")
             return null
         }
@@ -48,7 +49,7 @@ export default function useAuthService(): AuthServiceProps {
             localStorage.setItem("isLoggedIn", "true")
             localStorage.setItem("user_id", user_id.toString())
             setIsLoggedIn(true)
-            getUserDetails(user_id)
+            getUserDetails()
             return response.data
             // FIXME: Type error
         } catch (e) {
@@ -60,6 +61,8 @@ export default function useAuthService(): AuthServiceProps {
 
     const logout = () => {
         localStorage.setItem("isLoggedIn", "false")
+        localStorage.removeItem("user_id")
+        localStorage.removeItem("username")
         setIsLoggedIn(false)
     }
 

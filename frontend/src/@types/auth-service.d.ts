@@ -1,4 +1,4 @@
-interface LoginResponse { access: string, refresh: string }
+interface LoginResponse { refresh: string, user_id: number }
 
 export interface AuthServiceProps {
     isLoggedIn: boolean
