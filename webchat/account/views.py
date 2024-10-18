@@ -7,7 +7,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from .models import Account
 from .schemas import list_accounts_docs
-from .serializers import AccountSerializer
+from .serializers import AccountSerializer, CustomTokenObtainPairSerializer
 
 
 # Create your views here.
@@ -31,7 +31,7 @@ class JWTSetCookieMixin:
                 response.data["refresh"],
                 max_age=settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"],
                 httponly=True,
-                samesite=settings.SIMPLE_JWT["JWT_COOKIE_SAMESITE"]
+                samesite=settings.SIMPLE_JWT["JWT_COOKIE_SAMESITE"],
             )
         if response.data["access"]:
             response.set_cookie(
@@ -39,17 +39,13 @@ class JWTSetCookieMixin:
                 response.data["access"],
                 max_age=settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"],
                 httponly=True,
-                samesite=settings.SIMPLE_JWT["JWT_COOKIE_SAMESITE"]
-            )    
-        
+                samesite=settings.SIMPLE_JWT["JWT_COOKIE_SAMESITE"],
+            )
+
         del response.data["access"]
-        
+
         return super().finalize_response(request, response, *args, *kwargs)
 
 
-class JWTCookieTokenRefreshView(JWTSetCookieMixin, TokenRefreshView):
-    pass
-
-
 class JWTCookieTokenObtainPairView(JWTSetCookieMixin, TokenObtainPairView):
-    pass
+    serializer_class = CustomTokenObtainPairSerializer

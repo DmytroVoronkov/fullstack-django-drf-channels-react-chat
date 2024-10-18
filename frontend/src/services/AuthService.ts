@@ -4,8 +4,8 @@ import { BASE_URL } from "../config";
 import { useState } from "react";
 
 // FIXME: Move to separate file
-interface LoginResponse { access: string, refresh: string }
-// interface UserDetailsResponse { username: string }
+interface LoginResponse { refresh: string, user_id: number }
+interface UserDetailsResponse { username: string }
 
 export default function useAuthService(): AuthServiceProps {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(() => {
@@ -15,34 +15,25 @@ export default function useAuthService(): AuthServiceProps {
 
 
     // FIXME: Move to context maybe????
-    // const getUserDetails = async () => {
-    //     try {
-    //         // FIXME: Fix typing && Refactor urls
-    //         const response = await axios.get<UserDetailsResponse>(`${BASE_URL}/account/?user_id=1`, { withCredentials: true })
+    const getUserDetails = async () => {
+        try {
+            const userId = Number(localStorage.getItem("user_id"))
+            // FIXME: Fix typing && Refactor urls
+            const response = await axios.get<UserDetailsResponse>(`${BASE_URL}/account/?user_id=${userId}`, { withCredentials: true })
 
-    //         const { username } = response.data
+            const { username } = response.data
 
-    //         localStorage.setItem("isLoggedIn", "true")
-    //         localStorage.setItem("username", username)
-    //         setIsLoggedIn(true)
-    //         // return response.data
-    //         // FIXME: Type error
-    //     } catch (e) {
-    //         console.log(e)
-    //         localStorage.setItem("isLoggedIn", "false")
-    //         return null
-    //     }
-    // }
-
-    // const getUserId = (token: string) => {
-    //     // FIXME: Create helper function
-    //     const [, encodedPayload,] = token.split(".")
-    //     const decodedPayload = atob(encodedPayload)
-    //     const payloadData = JSON.parse(decodedPayload) as { user_id: string } // FIXME: Fix typing
-    //     const user_id = payloadData.user_id
-
-    //     return user_id
-    // }
+            localStorage.setItem("isLoggedIn", "true")
+            localStorage.setItem("username", username)
+            setIsLoggedIn(true)
+            // return response.data
+            // FIXME: Type error
+        } catch (e) {
+            console.log(e)
+            localStorage.setItem("isLoggedIn", "false")
+            return null
+        }
+    }
 
     const login = async (username: string, password: string) => {
         try {
@@ -51,10 +42,13 @@ export default function useAuthService(): AuthServiceProps {
                 username, password
             }, { withCredentials: true })
 
+            const user_id = response.data.user_id
+            console.log(user_id)
             // FIXME: Create localStorage service
             localStorage.setItem("isLoggedIn", "true")
+            localStorage.setItem("user_id", user_id.toString())
             setIsLoggedIn(true)
-            // getUserDetails()
+            getUserDetails(user_id)
             return response.data
             // FIXME: Type error
         } catch (e) {
