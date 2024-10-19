@@ -87,7 +87,11 @@ const MessageInterface: React.FC<ServerChannelProps> = ({ data }) => {
         console.log(e);
       }
     },
-    onClose: () => {
+    onClose: (e: CloseEvent) => {
+      if (e.code == 4001) {
+        console.log("Auth error!");
+      }
+      
       console.log("Closed!");
     },
     onError: (e) => {
