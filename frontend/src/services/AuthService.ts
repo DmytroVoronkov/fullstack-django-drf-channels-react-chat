@@ -66,5 +66,14 @@ export default function useAuthService(): AuthServiceProps {
         setIsLoggedIn(false)
     }
 
-    return { login, logout, isLoggedIn }
+    const refreshAccessToken = async () => {
+        try {
+            await axios.post(`${BASE_URL}/token/refresh/`, {}, { withCredentials: true })
+        } catch (refreshError) {
+            console.log(refreshError)
+            Promise.reject(refreshError) 
+        }
+    }
+
+    return { login, logout, isLoggedIn, refreshAccessToken}
 }

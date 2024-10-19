@@ -9,13 +9,17 @@ from django.core.handlers.asgi import ASGIHandler
 @database_sync_to_async
 def get_user(scope):
     token = scope["token"]
-    print(token)
     User = get_user_model()
-    user_id = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])["user_id"]
-
+    
     try:
+        if not token:
+            raise User.DoesNotExist
+        
+        user_id = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])["user_id"]
+
         return User.objects.get(id=user_id)
     except User.DoesNotExist:
+        scope["group"] = "anonymous"
         return AnonymousUser()
 
 
@@ -26,15 +30,14 @@ class JWTAuthMidlleware:
 
     async def __call__(self, scope, recieve, send):
         headers_dict = dict(scope["headers"])
-        cookies_str: str = headers_dict.get(b"cookie", b" ").decode()
+        cookies_str: str = headers_dict.get(b"cookie", b"").decode()
         cookies = {
             cookie.split("=")[0]: cookie.split("=")[1]
             for cookie in cookies_str.split("; ")
         }
         access_token = cookies.get(settings.SIMPLE_JWT["ACCESS_TOKEN_NAME"])
 
-        print()
-        scope["token"] = access_token
+        scope["token"] = access_token 
         scope["user"] = await get_user(scope)
 
         return await self.app(scope, recieve, send)
