@@ -61,11 +61,18 @@ export default function useAuthService(): AuthServiceProps {
         }
     }
 
-    const logout = () => {
+    const logout = async () => {
         localStorage.setItem("isLoggedIn", "false")
         localStorage.removeItem("user_id")
         localStorage.removeItem("username")
         setIsLoggedIn(false)
+
+        try {
+            await axios.post(`${BASE_URL}/logout/`, {}, { withCredentials: true })
+        } catch (refreshError) {
+            Promise.reject(refreshError)
+        }
+
         navigate("/login")
     }
 
@@ -74,9 +81,9 @@ export default function useAuthService(): AuthServiceProps {
             await axios.post(`${BASE_URL}/token/refresh/`, {}, { withCredentials: true })
         } catch (refreshError) {
             console.log(refreshError)
-            Promise.reject(refreshError) 
+            Promise.reject(refreshError)
         }
     }
 
-    return { login, logout, isLoggedIn, refreshAccessToken}
+    return { login, logout, isLoggedIn, refreshAccessToken }
 }

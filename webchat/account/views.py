@@ -1,16 +1,31 @@
 from django.conf import settings
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from .models import Account
 from .schemas import list_accounts_docs
-from .serializers import AccountSerializer, CustomTokenObtainPairSerializer, CustomTokenRefreshSerializer
+from .serializers import (
+    AccountSerializer,
+    CustomTokenObtainPairSerializer,
+    CustomTokenRefreshSerializer,
+)
 
 
 # Create your views here.
+class LogoutAPIView(APIView):
+    def post(self, request, format=None):
+        response = Response("Logged out successfully")
+
+        response.set_cookie(settings.SIMPLE_JWT["ACCESS_TOKEN_NAME"], None, expires=0)
+        response.set_cookie(settings.SIMPLE_JWT["REFRESH_TOKEN_NAME"], None, expires=0)
+        
+        return response
+
+
 class AccountViewSet(viewsets.ViewSet):
     queryset = Account.objects.all()
     permission_classes = [IsAuthenticated]
@@ -50,6 +65,7 @@ class JWTSetCookieMixin:
 
 class JWTCookieTokenObtainPairView(JWTSetCookieMixin, TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
 
 class JWTCookieTokenRefreshView(JWTSetCookieMixin, TokenRefreshView):
     serializer_class = CustomTokenRefreshSerializer
