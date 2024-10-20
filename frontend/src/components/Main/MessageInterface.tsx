@@ -1,8 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
-import useWebSocket from "react-use-websocket";
-import { Message as MessageI } from "../../@types/message";
-import useCrud from "../../hooks/useCrud";
 import { Server as IServer } from "../../@types/server";
 import {
   Avatar,
@@ -17,13 +14,9 @@ import {
 } from "@mui/material";
 import MessageChannels from "./MessageChannels";
 import Scroll from "./Scroll";
-
+// import { Message as MessageI } from "../../@types/message";
+import useChatService from "../../services/ChatService";
 // const socketUrl = "ws://127.0.0.1:8000/ws/test";
-
-interface SocketDataI {
-  new_message: MessageI;
-  type: string;
-}
 
 interface SendMessageData {
   message: string;
@@ -36,16 +29,16 @@ interface ServerChannelProps {
 }
 
 const MessageInterface: React.FC<ServerChannelProps> = ({ data }) => {
-  const [newMessages, setNewMessages] = useState<MessageI[]>([]);
-  const [message, setMessage] = useState("");
-  const { serverId, channelId } = useParams();
-  const { fetchData } = useCrud<MessageI>([], `/messages/?channel_id=${channelId}`);
   const theme = useTheme();
 
+  const { serverId, channelId } = useParams();
   const server_name = data?.[0]?.name ?? "Server";
   const server_description = data?.[0]?.description ?? "This is out Home";
 
-  const socketUrl = channelId ? `ws://127.0.0.1:8000/${serverId}/${channelId}` : null;
+  const { message, newMessages, setMessage, sendJsonMessage } = useChatService(
+    channelId || "",
+    serverId || ""
+  );
 
   const handleChange: React.ChangeEventHandler<HTMLTextAreaElement> = (
     e: React.ChangeEvent<HTMLTextAreaElement>
@@ -75,30 +68,6 @@ const MessageInterface: React.FC<ServerChannelProps> = ({ data }) => {
     const date = new Date(Date.parse(timestamp));
     return `${date.getHours()}:${date.getMinutes()} ${date.toLocaleDateString()} `;
   };
-
-  const { sendJsonMessage } = useWebSocket(socketUrl, {
-    onOpen: async () => {
-      try {
-        const data = await fetchData();
-        setNewMessages([]);
-        setNewMessages(Array.isArray(data) ? data : []);
-        console.log("Connected");
-      } catch (e) {
-        console.log(e);
-      }
-    },
-    onClose: () => {
-      console.log("Closed!");
-    },
-    onError: (e) => {
-      console.log(e);
-    },
-    onMessage: (msg) => {
-      const data = JSON.parse(msg.data) as SocketDataI;
-      setNewMessages((prev) => [...prev, data.new_message]);
-      setMessage("");
-    },
-  });
 
   return (
     <>
