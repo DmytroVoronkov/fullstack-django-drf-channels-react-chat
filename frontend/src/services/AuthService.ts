@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { AuthServiceProps } from "../@types/auth-service";
 import { BASE_URL } from "../config";
 import { useState } from "react";
@@ -56,8 +56,8 @@ export default function useAuthService(): AuthServiceProps {
             // FIXME: Type error
         } catch (e) {
             console.log(e)
-
-            return null
+            
+            return e as AxiosError
         }
     }
 
