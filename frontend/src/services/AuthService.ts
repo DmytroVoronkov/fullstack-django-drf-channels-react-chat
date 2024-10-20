@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 // FIXME: Move to separate file
-interface LoginResponse { refresh: string, user_id: number }
+interface LoginResponse { user_id: number }
 interface UserDetailsResponse { username: string }
 
 export default function useAuthService(): AuthServiceProps {
@@ -38,6 +38,20 @@ export default function useAuthService(): AuthServiceProps {
         }
     }
 
+    const register = async (username: string, password: string) => {
+        try {
+            const response = await axios.post<LoginResponse>(`${BASE_URL}/register/`, {
+                username, password
+            }, { withCredentials: true })
+
+            return response.status
+        } catch (e) {
+            const err = e as AxiosError
+            return err.response?.status || 500
+        }
+
+    }
+
     const login = async (username: string, password: string) => {
         try {
             // FIXME: Fix typing && URL Builder
@@ -52,11 +66,11 @@ export default function useAuthService(): AuthServiceProps {
             localStorage.setItem("user_id", user_id.toString())
             setIsLoggedIn(true)
             getUserDetails()
+
             return response.data
-            // FIXME: Type error
         } catch (e) {
             console.log(e)
-            
+
             return e as AxiosError
         }
     }
@@ -85,5 +99,5 @@ export default function useAuthService(): AuthServiceProps {
         }
     }
 
-    return { login, logout, isLoggedIn, refreshAccessToken }
+    return { register, login, logout, isLoggedIn, refreshAccessToken }
 }

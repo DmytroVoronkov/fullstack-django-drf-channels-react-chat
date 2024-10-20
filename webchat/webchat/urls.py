@@ -12,6 +12,7 @@ from account.views import (
     JWTCookieTokenObtainPairView,
     JWTCookieTokenRefreshView,
     LogoutAPIView,
+    RegisterAPIView,
 )
 
 router = DefaultRouter()
@@ -32,9 +33,11 @@ urlpatterns = [
         "api/token/refresh/", JWTCookieTokenRefreshView.as_view(), name="token_refresh"
     ),
     path("api/logout/", LogoutAPIView.as_view(), name="logout"),
+    path("api/register/", RegisterAPIView.as_view(), name="regiser"),
 ] + router.urls
 
 websocket_urlpatterns = [path("<str:serverId>/<str:channelId>", ChatConsumer.as_asgi())]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -15,6 +15,27 @@ class AccountSerializer(serializers.ModelSerializer):
         fields = ("username",)
 
 
+class RegisterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = ("username", "password")
+
+    def is_valid(self, raise_exception=False):
+        valid = super().is_valid(raise_exception=raise_exception)
+        username = self.validated_data["username"]
+
+        if valid:
+            if Account.objects.filter(username=username).exists():
+                self._errors["username"] = ["Username already exists!"]
+                valid = False
+        
+        return valid
+
+    def create(self, validated_data):
+        user = Account.objects.create_user(**validated_data)
+
+        return user
+
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
     def get_token(cls, user):
@@ -35,8 +56,10 @@ class CustomTokenRefreshSerializer(TokenRefreshSerializer):
     refresh = None
 
     def validate(self, attrs):
-        attrs["refresh"] = self.context["request"].COOKIES.get(settings.SIMPLE_JWT["REFRESH_TOKEN_NAME"])
-        
+        attrs["refresh"] = self.context["request"].COOKIES.get(
+            settings.SIMPLE_JWT["REFRESH_TOKEN_NAME"]
+        )
+
         print(attrs)
 
         if attrs["refresh"]:
